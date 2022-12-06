@@ -5,6 +5,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,12 +41,12 @@ public class AppController implements ApplicationRunner {
     }
 
     /*
-     * http://localhost:8080/app/testejpa?id=1
+     * http://localhost:8080/app/getTabelaTeste?id=1
      */
     @CrossOrigin
-    @RequestMapping(value = "/testejpa", produces = { "application/json" }, method = RequestMethod.GET, params = {
+    @RequestMapping(value = "/getTabelaTeste", produces = { "application/json" }, method = RequestMethod.GET, params = {
             "id" })
-    public @ResponseBody ResponseEntity<Object> testejpa(@RequestParam(value = "id") int id) {
+    public @ResponseBody ResponseEntity<Object> getTabelaTeste(@RequestParam(value = "id") int id) {
 
         try {
             JSONObject json = new JSONObject();
@@ -55,6 +56,38 @@ public class AppController implements ApplicationRunner {
             return ResponseEntity.ok(json.toString());
         } catch (Exception e) {
             return null;
+        }
+
+    }
+
+    /*
+     * http://localhost:8080/app/updateTabelaTeste
+     * POST
+     * {
+     * "id": 1,
+     * "nome": "Teste 1"
+     * }
+     */
+    @CrossOrigin
+    @RequestMapping(value = "/updateTabelaTeste", produces = {
+            "application/json" }, method = RequestMethod.POST)
+    public @ResponseBody ResponseEntity<Object> updateTabelaTeste(@RequestBody TabelaTeste req) {
+
+        try {
+
+            int id = req.getId();
+            String nome = req.getNome();
+
+            tabelaTesteRepository.updateTabelaTeste(nome, id);
+
+            JSONObject json = new JSONObject();
+            json.put("id", id);
+            json.put("nome", nome);
+
+            return ResponseEntity.ok(json.toString());
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
 
     }
