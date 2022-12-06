@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,18 +39,19 @@ public class AppController implements ApplicationRunner {
 
     }
 
+    /*
+     * http://localhost:8080/app/testejpa?id=1
+     */
     @CrossOrigin
-    @RequestMapping(value = "/testejpa", produces = { "application/json" }, method = RequestMethod.GET)
-    public @ResponseBody ResponseEntity<Object> testejpa() {
+    @RequestMapping(value = "/testejpa", produces = { "application/json" }, method = RequestMethod.GET, params = {
+            "id" })
+    public @ResponseBody ResponseEntity<Object> testejpa(@RequestParam(value = "id") int id) {
 
         try {
             JSONObject json = new JSONObject();
-
-            TabelaTeste tabelaTeste = tabelaTesteRepository.findById(6);
-
+            TabelaTeste tabelaTeste = tabelaTesteRepository.findById(id);
             json.put("id", tabelaTeste.getId());
             json.put("nome", tabelaTeste.getNome());
-
             return ResponseEntity.ok(json.toString());
         } catch (Exception e) {
             return null;
